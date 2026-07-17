@@ -45,12 +45,18 @@ jobs:
           git clone --branch ${{ env.PROTON_BRANCH }} --depth 1 --recurse-submodules --shallow-submodules \
             https://github.com/ValveSoftware/Proton.git proton-src
 
-      - name: Apply PR #9608 fix
+      - name: Apply PR #9608 fix + HTML surface xdg-open redirect
         run: |
           cd proton-src
           cp ../lsteamclient_unixlib_patched.cpp lsteamclient/unixlib.cpp
+          for v in 001 002 003 004 005; do
+            cp "../cppISteamHTMLSurface_STEAMHTMLSURFACE_INTERFACE_VERSION_${v}.cpp" \
+               "lsteamclient/cppISteamHTMLSurface_STEAMHTMLSURFACE_INTERFACE_VERSION_${v}.cpp"
+          done
+          echo "Patched files:"
           git diff --stat
-          echo "Patched lsteamclient/unixlib.cpp with PR #9608 fix"
+          echo "---"
+          echo "HTMLSurface LoadURL will redirect http/https URLs to xdg-open"
 
       - name: Configure build
         run: |

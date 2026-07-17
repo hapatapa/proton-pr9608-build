@@ -360,33 +360,6 @@ static NTSTATUS steamclient_Steam_BGetCallback( Params *params, bool wow64 )
     if (u_msg->m_iCallback == 4503) s_awaiting_url_change = true;
     if (u_msg->m_iCallback == 4505) s_awaiting_url_change = false;
 
-    /* Redirect HTML surface URLs to native browser (Firefox).
-     * When Steam's HTML_StartRequest_t (4503) fires, extract the URL
-     * and open it with xdg-open so Xbox Live auth uses the real browser. */
-    if (u_msg->m_iCallback == 4503 && u_msg->m_pubParam)
-    {
-        const u64_HTML_StartRequest_t *sr =
-            (const u64_HTML_StartRequest_t *)u_msg->m_pubParam;
-        if (sr->pchURL)
-        {
-            static uint32_t s_last_browser_handle = 0;
-            /* Only open once per browser instance to avoid duplicates */
-            if (sr->unBrowserHandle != s_last_browser_handle)
-            {
-                pid_t pid = fork();
-                if (pid == 0)
-                {
-                    /* Child: open URL, detach from parent */
-                    execlp("xdg-open", "xdg-open", sr->pchURL, (char*)NULL);
-                    _exit(1);
-                }
-                WARN("HTML_StartRequest: opening %s in native browser (handle %u, pid %d)\n",
-                     sr->pchURL, sr->unBrowserHandle, pid);
-                s_last_browser_handle = sr->unBrowserHandle;
-            }
-        }
-    }
-
     /* Between StartRequest and URLChanged, stash NeedsPaint and deliver
      * the next callback instead. Deep-copy m_pubParam since
      * FreeLastCallback invalidates Steam's buffer. */
