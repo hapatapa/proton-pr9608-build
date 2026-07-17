@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghcActions
           sudo rm -rf /usr/local/graalvm /opt/hostedtoolcache /usr/share/swift
-          sudo rm -rf /usr/local/lib/node_modules /opt/azcopy
+          sudo rm -rf /usr/local/lib/node_modules /opt/azopy
           sudo apt-get clean
           sudo apt-get autoremove -y
           sudo docker image prune -af
@@ -42,7 +42,7 @@ jobs:
 
       - name: Clone Proton ${{ env.PROTON_BRANCH }}
         run: |
-          git clone --branch ${{ env.PROTON_BRANCH }} --depth 1 \
+          git clone --branch ${{ env.PROTON_BRANCH }} --depth 1 --recursive \
             https://github.com/ValveSoftware/Proton.git proton-src
 
       - name: Apply PR #9608 fix (lsteamclient)
@@ -70,8 +70,9 @@ jobs:
           # navigate_url() that calls fork()+execlp("xdg-open",...) for any
           # http/https URL, returning S_OK without rendering in Wine's IE engine.
 
-          # Start the build in background
-          make redist 2>&1 | tee build.log &
+          # Start the build in background, redirect to file (not pipe) so we
+          # capture the real exit code from make, not from tee.
+          make redist > build.log 2>&1 &
           BUILD_PID=$!
 
           # Watch for navigate.c and patch it
@@ -82,39 +83,36 @@ jobs:
                   -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
               if [ -n "$NAVFILE" ] && [ -f "$NAVFILE" ]; then
                   if ! grep -q "xdg-open" "$NAVFILE"; then
-                      echo "=== FOUND navigate.c at $NAVFILE, patching now ==="
-                      python3 ../patch_mshtml_navigate.py "$NAVFILE"
-                      echo "=== Patch applied! ==="
+                      echo "=== FOUND navigate.c at $NAVFILE, patching now ===" >> build.log
+                      python3 ../patch_mshtml_navigate.py "$NAVFILE" 2>&1 | tee -a build.log
+                      echo "=== Patch applied! ===" >> build.log
                       # Also check 32-bit wine source
                       NAVFILE32=$(find obj-wine32/src-wine src-wine \
                           -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
                       if [ -n "$NAVFILE32" ] && [ "$NAVFILE32" != "$NAVFILE" ] && [ -f "$NAVFILE32" ]; then
                           if ! grep -q "xdg-open" "$NAVFILE32"; then
-                              echo "=== Also patching 32-bit navigate.c at $NAVFILE32 ==="
-                              python3 ../patch_mshtml_navigate.py "$NAVFILE32"
+                              echo "=== Also patching 32-bit navigate.c at $NAVFILE32 ===" >> build.log
+                              python3 ../patch_mshtml_navigate.py "$NAVFILE32" 2>&1 | tee -a build.log
                           fi
                       fi
                       break
                   else
-                      echo "navigate.c already patched"
+                      echo "navigate.c already patched" >> build.log
                       break
                   fi
               fi
               if ! kill -0 $BUILD_PID 2>/dev/null; then
-                  echo "Build process ended"
+                  echo "Build process ended unexpectedly" >> build.log
                   break
               fi
           done
 
-          # Wait for build to finish
-          echo "Waiting for build to complete..."
+          # Wait for build to finish and capture real exit code
+          echo "Waiting for build to complete..." >> build.log
           wait $BUILD_PID
-          echo "Build finished with exit code $?"
-
-          # Verify patch
-          echo "=== Verification ==="
-          find . -name navigate.c -path "*/mshtml/*" -exec grep -l "xdg-open" {} \; 2>/dev/null || \
-              echo "WARNING: mshtml patch may not have been applied"
+          BUILD_EXIT=$?
+          echo "Build finished with exit code $BUILD_EXIT" >> build.log
+          exit $BUILD_EXIT
 
       - name: Package redist
         if: success()
