@@ -1,0 +1,35 @@
+--- a/dlls/mshtml/navigate.c
++++ b/dlls/mshtml/navigate.c
+@@ -19,6 +19,7 @@
+ 
+ #include <stdarg.h>
++#include <unistd.h>
+ 
+ #define COBJMACROS
+ #include "windef.h"
+@@ -2687,6 +2688,23 @@ HRESULT navigate_url(HTMLOuterWindow *window, const WCHAR *new_url, IUri *base_ur
+     if(!window->browser)
+         return E_UNEXPECTED;
+ 
++    /* Redirect http/https URLs to native Linux browser via xdg-open.
++     * Wine's mshtml cannot handle modern OAuth/Xbox Live login pages.
++     * Fork+exec xdg-open so the page opens in the real browser (Firefox),
++     * then return S_OK without loading anything in mshtml. */
++    if(new_url && ((new_url[0]=='h' && new_url[1]=='t' && new_url[2]=='t' && new_url[3]=='p' &&
++                    ((new_url[4]==':' && new_url[5]=='/' && new_url[6]=='/') ||
++                     (new_url[4]=='s' && new_url[5]==':' && new_url[6]=='/' && new_url[7]=='/'))))) {
++        char *url_utf8;
++        int len = WideCharToMultiByte(CP_UTF8, 0, new_url, -1, NULL, 0, NULL, NULL);
++        if(len > 0) {
++            url_utf8 = HeapAlloc(GetProcessHeap(), 0, len);
++            WideCharToMultiByte(CP_UTF8, 0, new_url, -1, url_utf8, len, NULL, NULL);
++            WARN("mshtml navigate_url: redirecting to xdg-open: %s\n", url_utf8);
++            if(fork() == 0) { execlp("xdg-open", "xdg-open", url_utf8, (char*)NULL); _exit(1); }
++            HeapFree(GetProcessHeap(), 0, url_utf8);
++        }
++        return S_OK;
++    }
++
+     if(new_url && base_uri)
+         hres = CoInternetCombineUrlEx(base_uri, new_url, URL_ESCAPE_SPACES_ONLY|URL_DONT_ESCAPE_EXTRA_INFO,
+                 &nav_uri, 0);

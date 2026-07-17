@@ -1,4 +1,4 @@
-name: Build Proton 10.0 + PR #9608
+name: Build Proton 10.0 + mshtml xdg-open redirect
 
 on:
   workflow_dispatch:
@@ -42,21 +42,14 @@ jobs:
 
       - name: Clone Proton ${{ env.PROTON_BRANCH }}
         run: |
-          git clone --branch ${{ env.PROTON_BRANCH }} --depth 1 --recurse-submodules --shallow-submodules \
+          git clone --branch ${{ env.PROTON_BRANCH }} --depth 1 \
             https://github.com/ValveSoftware/Proton.git proton-src
 
-      - name: Apply PR #9608 fix + HTML surface xdg-open redirect
+      - name: Apply PR #9608 fix (lsteamclient)
         run: |
           cd proton-src
           cp ../lsteamclient_unixlib_patched.cpp lsteamclient/unixlib.cpp
-          for v in 001 002 003 004 005; do
-            cp "../cppISteamHTMLSurface_STEAMHTMLSURFACE_INTERFACE_VERSION_${v}.cpp" \
-               "lsteamclient/cppISteamHTMLSurface_STEAMHTMLSURFACE_INTERFACE_VERSION_${v}.cpp"
-          done
-          echo "Patched files:"
-          git diff --stat
-          echo "---"
-          echo "HTMLSurface LoadURL will redirect http/https URLs to xdg-open"
+          echo "Applied lsteamclient PR #9608 fix"
 
       - name: Configure build
         run: |
@@ -65,6 +58,60 @@ jobs:
           ../proton-src/configure.sh \
             --build-name=${{ github.event.inputs.build_name || 'Proton-10.0-PR9608' }} \
             --container-engine=docker
+
+      - name: Patch Wine mshtml (xdg-open redirect)
+        run: |
+          cd build-dir
+          # Clone wine source (make wine-source copies it to src-wine/)
+          make wine-source 2>&1 | tail -3
+          echo "=== Verifying wine source ==="
+          ls src-wine/dlls/mshtml/navigate.c || { echo "ERROR: navigate.c not found"; exit 1; }
+          # Apply mshtml navigate.c patch using sed (context-line-number independent)
+          # 1. Add #include <unistd.h> after #include <stdarg.h>
+          sed -i '/^#include <stdarg.h>$/a #include <unistd.h>' src-wine/dlls/mshtml/navigate.c
+          # 2. Add xdg-open redirect after "if(!window->browser)\n        return E_UNEXPECTED;" in navigate_url
+          python3 << 'PYEOF'
+          import re
+          with open("src-wine/dlls/mshtml/navigate.c", "r") as f:
+              content = f.read()
+          
+          redirect_code = '''
+    /* Redirect http/https URLs to native Linux browser via xdg-open.
+     * Wine's mshtml cannot handle modern OAuth/Xbox Live login pages.
+     * Fork+exec xdg-open so the page opens in the real browser (Firefox),
+     * then return S_OK without loading anything in mshtml. */
+    if(new_url && ((new_url[0]=='h' && new_url[1]=='t' && new_url[2]=='t' && new_url[3]=='p' &&
+                    ((new_url[4]==':' && new_url[5]=='/' && new_url[6]=='/') ||
+                     (new_url[4]=='s' && new_url[5]==':' && new_url[6]=='/' && new_url[7]=='/'))))) {
+        char *url_utf8;
+        int len = WideCharToMultiByte(CP_UTF8, 0, new_url, -1, NULL, 0, NULL, NULL);
+        if(len > 0) {
+            url_utf8 = HeapAlloc(GetProcessHeap(), 0, len);
+            WideCharToMultiByte(CP_UTF8, 0, new_url, -1, url_utf8, len, NULL, NULL);
+            WARN("mshtml navigate_url: redirecting to xdg-open: %s\\n", url_utf8);
+            if(fork() == 0) { execlp("xdg-open", "xdg-open", url_utf8, (char*)NULL); _exit(1); }
+            HeapFree(GetProcessHeap(), 0, url_utf8);
+        }
+        return S_OK;
+    }
+'''
+          # Find navigate_url function and patch it (look for the function signature)
+          # We target the specific occurrence inside navigate_url by using a larger context
+          func_pattern = r'(HRESULT navigate_url\(HTMLOuterWindow \*window.*?if\(!window->browser\)\s+return E_UNEXPECTED;\n)'
+          m = re.search(func_pattern, content, re.DOTALL)
+          if not m:
+              print("ERROR: Could not find navigate_url function with browser check")
+              exit(1)
+          # Insert redirect code right after the browser check
+          content = content[:m.end()] + redirect_code + content[m.end():]
+          with open("src-wine/dlls/mshtml/navigate.c", "w") as f:
+              f.write(content)
+          print("Successfully patched navigate_url in mshtml")
+          PYEOF
+          echo "=== Patched navigate.c (first 35 lines) ==="
+          head -35 src-wine/dlls/mshtml/navigate.c
+          echo "=== Searching for redirect code ==="
+          grep -n "xdg-open" src-wine/dlls/mshtml/navigate.c
 
       - name: Build Proton (redist)
         working-directory: build-dir
