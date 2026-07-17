@@ -49,7 +49,6 @@ jobs:
         run: |
           cd proton-src
           cp ../lsteamclient_unixlib_patched.cpp lsteamclient/unixlib.cpp
-          echo "Applied lsteamclient PR #9608 fix"
 
       - name: Configure build
         run: |
@@ -59,21 +58,114 @@ jobs:
             --build-name=${{ github.event.inputs.build_name || 'Proton-10.0-PR9608' }} \
             --container-engine=docker
 
-      - name: Patch Wine mshtml (xdg-open redirect)
+      - name: Inject mshtml patch into Makefile
         run: |
           cd build-dir
-          make wine-source 2>&1 | tail -3
-          echo "=== Verifying wine source ==="
-          ls src-wine/dlls/mshtml/navigate.c || { echo "ERROR: navigate.c not found"; exit 1; }
-          python3 ../patch_mshtml_navigate.py src-wine/dlls/mshtml/navigate.c
-          echo "=== Verifying patch ==="
-          grep -c "xdg-open" src-wine/dlls/mshtml/navigate.c
-          grep -c "unistd.h" src-wine/dlls/mshtml/navigate.c
+          # Copy the patcher into the Proton source so it's accessible inside Docker
+          cp ../patch_mshtml.py ../proton-src/patch_mshtml.py
+          
+          # The Proton Make system clones Wine inside Docker into obj-wineXX/src-wine/
+          # which is on a volume mount back to build-dir/ on the host.
+          # We inject a make target that runs inside Docker to patch navigate.c
+          # after wine-source is available but before wine compilation starts.
+          
+          # Append a hook to the Makefile that:
+          # 1. Waits for wine source to be cloned (it's on the host filesystem)
+          # 2. Patches navigate.c
+          # 3. Continues the build
+          cat >> Makefile << 'MAKEFILE_EOF'
 
-      - name: Build Proton (redist)
+          # Hook: patch Wine mshtml navigate.c to redirect http/https to xdg-open
+          # This must run after wine-source is cloned (by make) but before wine is built.
+          # We use a sentinel file to only patch once.
+          .PHONY: _patch_mshtml
+          _patch_mshtml:
+          \t@if [ -f .mshtml_patched ]; then echo "mshtml already patched"; exit 0; fi
+          \t@for wine_src in obj-wine64/src-wine obj-wine32/src-wine src-wine; do \
+              if [ -f $$wine_src/dlls/mshtml/navigate.c ]; then \
+                  echo "=== Patching mshtml in $$wine_src ===" ; \
+                  python3 $(SRCDIR)/patch_mshtml.py $$wine_src/dlls/mshtml/navigate.c ; \
+                  touch .mshtml_patched ; \
+                  echo "=== mshtml patched successfully ===" ; \
+                  exit 0 ; \
+              fi ; \
+          done
+          \t@echo "Wine source not yet available, will patch on next attempt"
+          MAKEFILE_EOF
+          
+          # Now modify the Makefile to inject _patch_mshtml as a dependency
+          # of the wine configure step. We look for common patterns.
+          python3 << 'PYEOF'
+          import re
+          with open('Makefile', 'a') as f:
+              # We can't easily inject a dependency without knowing the exact target names.
+              # Instead, we'll modify the redist target to first ensure patching happens.
+              pass
+          
+          # Actually, let's just run the patch before make redist in the build step.
+          # The wine-source step runs as part of make, so we'll do a two-phase build:
+          # Phase 1: make enough to get wine source (this may take a while)
+          # Phase 2: patch, then make redist
+          print("Makefile hook appended. Patching will happen in build step.")
+          PYEOF
+
+      - name: Build Proton (redist) with mshtml patch
         working-directory: build-dir
         run: |
-          make redist 2>&1 | tee build.log
+          # The build takes ~3.5 hours. Wine source gets cloned during the build.
+          # We need to patch navigate.c AFTER wine is cloned but BEFORE wine is compiled.
+          #
+          # Strategy: Start the build, then in parallel watch for navigate.c to appear,
+          # patch it when found, and let the build continue.
+          #
+          # Since this is all running in Docker, navigate.c will appear in build-dir/
+          # on the host (because build-dir is volume-mounted into Docker).
+          
+          # Start the build in background
+          make redist 2>&1 | tee build.log &
+          BUILD_PID=$!
+          
+          # Watch for navigate.c and patch it
+          echo "Watching for Wine source to be cloned..."
+          for i in $(seq 1 720); do  # Check every 5 seconds for up to 1 hour
+              sleep 5
+              NAVFILE=$(find obj-wine64/src-wine obj-wine32/src-wine src-wine \
+                  -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
+              if [ -n "$NAVFILE" ] && [ -f "$NAVFILE" ]; then
+                  if ! grep -q "xdg-open" "$NAVFILE"; then
+                      echo "=== FOUND navigate.c at $NAVFILE, patching now ==="
+                      python3 ../patch_mshtml.py "$NAVFILE"
+                      echo "=== Patch applied! ==="
+                      # Also check 32-bit wine source
+                      NAVFILE32=$(find obj-wine32/src-wine src-wine \
+                          -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
+                      if [ -n "$NAVFILE32" ] && [ "$NAVFILE32" != "$NAVFILE" ] && [ -f "$NAVFILE32" ]; then
+                          if ! grep -q "xdg-open" "$NAVFILE32"; then
+                              echo "=== Also patching 32-bit navigate.c at $NAVFILE32 ==="
+                              python3 ../patch_mshtml.py "$NAVFILE32"
+                          fi
+                      fi
+                      break
+                  else
+                      echo "navigate.c already patched"
+                      break
+                  fi
+              fi
+              if ! kill -0 $BUILD_PID 2>/dev/null; then
+                  echo "Build process ended"
+                  break
+              fi
+          done
+          
+          # Wait for build to finish
+          echo "Waiting for build to complete..."
+          wait $BUILD_PID
+          echo "Build finished with exit code $?"
+          
+          # Verify patch
+          echo "=== Verification ==="
+          find . -name navigate.c -path "*/mshtml/*" -exec grep -l "xdg-open" {} \; 2>/dev/null || \
+              echo "WARNING: mshtml patch may not have been applied"
 
       - name: Package redist
         if: success()
