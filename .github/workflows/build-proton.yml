@@ -40,13 +40,12 @@ jobs:
           git clone --branch ${{ env.PROTON_BRANCH }} --depth 1 --recurse-submodules --shallow-submodules \
             https://github.com/ValveSoftware/Proton.git proton-src
 
-      - name: Cherry-pick PR #9608 fix
+      - name: Apply PR #9608 fix
         run: |
           cd proton-src
-          git fetch --depth 1 https://github.com/diegoalejandrogomez/Proton.git fix/html-surface-needspaint-reorder
-          git cherry-pick 96678bafd004585c6204b088c0f26b353d83519c --no-commit
-          git diff --cached --stat
-          echo "Cherry-pick applied successfully"
+          cp ../lsteamclient_unixlib_patched.cpp lsteamclient/unixlib.cpp
+          git diff --stat
+          echo "Patched lsteamclient/unixlib.cpp with PR #9608 fix"
 
       - name: Configure build
         run: |
