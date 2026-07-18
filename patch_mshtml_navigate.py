@@ -11,7 +11,11 @@ Wine's implementation ultimately delegates http:// URLs to the
 'winebrowser' helper program, which calls __wine_unix_spawnvp()
 to run xdg-open (or the user's configured browser) as a real Unix
 process.  ShellExecuteW is available in shell32 which mshtml already
-links against.
+links against (see Makefile.in IMPORTS).
+
+NOTE: We do NOT #include <shellapi.h> because it causes massive type
+conflicts in navigate.c.  Instead we forward-declare ShellExecuteW.
+Since mshtml links shell32, the linker will resolve it.
 """
 import re, sys
 
@@ -19,21 +23,29 @@ filepath = sys.argv[1]
 with open(filepath, "r") as f:
     content = f.read()
 
-# Ensure shellapi.h is included (for ShellExecuteW)
-if "#include <shellapi.h>" not in content:
-    # Insert after the first #include line
-    content = content.replace("#include <stdarg.h>\n",
-                              "#include <stdarg.h>\n#include <shellapi.h>\n", 1)
-    print("Added #include <shellapi.h>")
-else:
-    print("#include <shellapi.h> already present")
+# Add a forward declaration for ShellExecuteW instead of including
+# shellapi.h (which causes type conflicts in this translation unit).
+# We also need SW_SHOWNORMAL (=1).
+declare_code = """
+/* Forward declarations for ShellExecuteW (linked from shell32).
+ * We cannot #include <shellapi.h> here due to type conflicts. */
+#ifndef SW_SHOWNORMAL
+#define SW_SHOWNORMAL 1
+#endif
+extern HINSTANCE WINAPI ShellExecuteW(HWND hwnd, const WCHAR *lpOperation,
+    const WCHAR *lpFile, const WCHAR *lpParameters, const WCHAR *lpDirectory,
+    INT nShowCmd);
+"""
 
-# Add xdg-open redirect in navigate_url after the browser check.
-# We use ShellExecuteW because:
-#   1. It's a standard Win32 API, available in any MinGW build
-#   2. Wine routes http:// URLs through 'winebrowser' which calls
-#      __wine_unix_spawnvp() -> real xdg-open on the Linux host
-#   3. system() does NOT work (it goes through cmd.exe, not Unix shell)
+if "extern HINSTANCE WINAPI ShellExecuteW" not in content:
+    # Insert after the last #include before the first C code
+    content = content.replace("#include <stdarg.h>\n",
+                              "#include <stdarg.h>\n" + declare_code, 1)
+    print("Added ShellExecuteW forward declaration")
+else:
+    print("ShellExecuteW declaration already present")
+
+# Add redirect in navigate_url after the browser check.
 redirect_code = """
     /* Redirect http/https URLs to native Linux browser.
      * Wine's mshtml (IE engine) cannot render modern OAuth/Xbox Live
