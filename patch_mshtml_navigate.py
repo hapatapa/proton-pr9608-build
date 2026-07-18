@@ -28,10 +28,13 @@ with open(filepath, "r") as f:
 # We also need SW_SHOWNORMAL (=1).
 declare_code = """
 /* Forward declarations for ShellExecuteW (linked from shell32).
- * We cannot #include <shellapi.h> here due to type conflicts. */
+ * We cannot #include <shellapi.h> here due to type conflicts.
+ * HINSTANCE is not available from navigate.c's existing includes in the
+ * MinGW cross-compilation environment, so we typedef it ourselves. */
 #ifndef SW_SHOWNORMAL
 #define SW_SHOWNORMAL 1
 #endif
+typedef struct HINSTANCE__ *HINSTANCE;
 extern HINSTANCE WINAPI ShellExecuteW(HWND hwnd, const WCHAR *lpOperation,
     const WCHAR *lpFile, const WCHAR *lpParameters, const WCHAR *lpDirectory,
     INT nShowCmd);
