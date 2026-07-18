@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghcActions
           sudo rm -rf /usr/local/graalvm /opt/hostedtoolcache /usr/share/swift
-          sudo rm -rf /usr/local/lib/node_modules /opt/azopy
+          sudo rm -rf /usr/local/lib/node_modules /opt/azcopy
           sudo apt-get clean
           sudo apt-get autoremove -y
           sudo docker image prune -af
@@ -61,58 +61,63 @@ jobs:
       - name: Build Proton (redist) with mshtml patch
         working-directory: build-dir
         run: |
-          # The build takes ~3.5 hours. Wine source gets cloned during the build
-          # into obj-wine64/src-wine/ on a volume mount back to this directory.
-          # We start the build in background, watch for navigate.c to appear,
-          # patch it in-place, then let the build continue compiling.
-          #
-          # The patch script (patch_mshtml_navigate.py) injects code into
-          # navigate_url() that calls fork()+execlp("xdg-open",...) for any
-          # http/https URL, returning S_OK without rendering in Wine's IE engine.
-
-          # Start the build in background, redirect to file (not pipe) so we
-          # capture the real exit code from make, not from tee.
+          # Start the build in background, redirect to file so we capture
+          # the real exit code from make.
           make redist > build.log 2>&1 &
           BUILD_PID=$!
 
           # Watch for navigate.c and patch it
           echo "Watching for Wine source to be cloned..."
-          for i in $(seq 1 720); do  # Check every 5 seconds for up to 1 hour
+          for i in $(seq 1 720); do
               sleep 5
               NAVFILE=$(find obj-wine64/src-wine obj-wine32/src-wine src-wine \
                   -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
               if [ -n "$NAVFILE" ] && [ -f "$NAVFILE" ]; then
                   if ! grep -q "xdg-open" "$NAVFILE"; then
-                      echo "=== FOUND navigate.c at $NAVFILE, patching now ===" >> build.log
-                      python3 ../patch_mshtml_navigate.py "$NAVFILE" 2>&1 | tee -a build.log
-                      echo "=== Patch applied! ===" >> build.log
-                      # Also check 32-bit wine source
+                      echo "=== FOUND navigate.c at $NAVFILE, patching now ==="
+                      python3 ../patch_mshtml_navigate.py "$NAVFILE"
+                      echo "=== Patch applied! ==="
                       NAVFILE32=$(find obj-wine32/src-wine src-wine \
                           -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
                       if [ -n "$NAVFILE32" ] && [ "$NAVFILE32" != "$NAVFILE" ] && [ -f "$NAVFILE32" ]; then
                           if ! grep -q "xdg-open" "$NAVFILE32"; then
-                              echo "=== Also patching 32-bit navigate.c at $NAVFILE32 ===" >> build.log
-                              python3 ../patch_mshtml_navigate.py "$NAVFILE32" 2>&1 | tee -a build.log
+                              echo "=== Also patching 32-bit navigate.c at $NAVFILE32 ==="
+                              python3 ../patch_mshtml_navigate.py "$NAVFILE32"
                           fi
                       fi
                       break
                   else
-                      echo "navigate.c already patched" >> build.log
+                      echo "navigate.c already patched"
                       break
                   fi
               fi
               if ! kill -0 $BUILD_PID 2>/dev/null; then
-                  echo "Build process ended unexpectedly" >> build.log
+                  echo "Build process ended unexpectedly"
                   break
               fi
           done
 
-          # Wait for build to finish and capture real exit code
-          echo "Waiting for build to complete..." >> build.log
+          # Wait for build to finish
+          echo "Waiting for build to complete..."
           wait $BUILD_PID
           BUILD_EXIT=$?
-          echo "Build finished with exit code $BUILD_EXIT" >> build.log
+          echo "Build finished with exit code $BUILD_EXIT"
+
+          # Always show tail of build log for debugging
+          echo "=== Last 100 lines of build.log ==="
+          tail -100 build.log
+          echo "=== Disk space ==="
+          df -h /
+
           exit $BUILD_EXIT
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build-dir/build.log
+          retention-days: 3
 
       - name: Package redist
         if: success()
@@ -133,5 +138,7 @@ jobs:
         run: |
           if [ -f build-dir/build.log ]; then
             echo "### Build Errors (last 50 lines with Error)" >> $GITHUB_STEP_SUMMARY
-            grep -n '] Error [0-9]' build-dir/build.log | tail -50 >> $GITHUB_STEP_SUMMARY || echo "No errors found" >> $GITHUB_STEP_SUMMARY
+            grep -n '] Error [0-9]' build-dir/build.log | tail -50 >> $GITHUB_STEP_SUMMARY || echo "No Wine-style errors found" >> $GITHUB_STEP_SUMMARY
+            echo "### Last 20 lines" >> $GITHUB_STEP_SUMMARY
+            tail -20 build-dir/build.log >> $GITHUB_STEP_SUMMARY
           fi
