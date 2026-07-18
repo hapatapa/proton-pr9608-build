@@ -1,0 +1,202 @@
+Archive:  build-log-16.zip
+  inflating: build.log               
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlnode.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlnode.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlobject.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlobject.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlscript.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlscript.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlselect.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlselect.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlstorage.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlstorage.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlstyle.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlstyle.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlstyleelem.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlstyleelem.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlstylesheet.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlstylesheet.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmltable.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmltable.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmltextarea.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmltextarea.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmltextnode.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmltextnode.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/htmlwindow.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/htmlwindow.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/ifacewrap.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/ifacewrap.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/loadopts.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/loadopts.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/main.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/main.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/mutation.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/mutation.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/navigate.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/navigate.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/navigate.c:26:8: error: unknown type name 'HINSTANCE'
+   26 | extern HINSTANCE WINAPI ShellExecuteW(HWND hwnd, const WCHAR *lpOperation,
+      |        ^~~~~~~~~
+/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/navigate.c:26:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'ShellExecuteW'
+   26 | extern HINSTANCE WINAPI ShellExecuteW(HWND hwnd, const WCHAR *lpOperation,
+      |                         ^~~~~~~~~~~~~
+i686-w64-mingw32-gcc -c -o dlls/mshtml/i386-windows/npplugin.o /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/npplugin.c \
+  -Idlls/mshtml \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml \
+  -Iinclude -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include \
+  -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/include/msvcrt \
+  -D__WINESRC__ -D_UCRT -D__WINE_PE_BUILD -Wall -fno-strict-aliasing -Wdeclaration-after-statement \
+  -Wempty-body -Wignored-qualifiers -Winit-self -Wno-packed-not-aligned -Wshift-overflow=2 \
+  -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith \
+  -Wlogical-op -Wabsolute-value -ffunction-sections -fno-omit-frame-pointer \
+  -mpreferred-stack-boundary=2 -Werror -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_orc-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gstreamer-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-gst_base-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vkd3d-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-ffmpeg-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-openfst-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-kaldi-i386/include -I/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/dst-vosk-i386/include  -mstackrealign -march=nocona -mtune=core-avx2 -mfpmath=sse -O2 -fwrapv -fno-strict-aliasing -ggdb -ffunction-sections -fdata-sections -fno-omit-frame-pointer -ffile-prefix-map=/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine=.
+/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/navigate.c: In function 'navigate_url':
+/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/src-wine/dlls/mshtml/navigate.c:2709:9: error: implicit declaration of function 'ShellExecuteW' [-Werror=implicit-function-declaration]
+ 2709 |         ShellExecuteW(NULL, L"open", new_url, NULL, NULL, SW_SHOWNORMAL);
+      |         ^~~~~~~~~~~~~
+cc1: all warnings being treated as errors
+make[1]: *** [Makefile:206413: dlls/mshtml/i386-windows/navigate.o] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make[1]: Leaving directory '/home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/obj-wine-i386'
+make: *** [../proton-src/Makefile.in:542: /home/runner/work/proton-pr9608-build/proton-pr9608-build/build-dir/.wine-i386-build] Error 2
+rm obj-fonts/LiberationMono-Regular.sfd obj-fonts/LiberationSerif-Regular.sfd obj-fonts/LiberationSans-Regular.sfd obj-fonts/LiberationMono-Bold.sfd obj-fonts/LiberationSans-Bold.sfd
+make: *** [../proton-src/Makefile.in:1322: redist] Error 2
