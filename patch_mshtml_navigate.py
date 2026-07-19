@@ -45,16 +45,16 @@ else:
     print("ShellExecuteW forward declaration already present")
 
 # --- Step 2: Insert redirect logic after the browser null-check ---
-redirect_code = """        /* Redirect http/https URLs to native Linux browser via ShellExecuteW.
-         * Chain: ShellExecuteW -> shell32 -> winebrowser.exe -> __wine_unix_spawnvp -> xdg-open */
-        if(new_url && ((new_url[0]=='h' && new_url[1]=='t' && new_url[2]=='t' && new_url[3]=='p' &&
-                        ((new_url[4]==':' && new_url[5]=='/' && new_url[6]=='/') ||
-                         (new_url[4]=='s' && new_url[5]==':' && new_url[6]=='/' && new_url[7]=='/'))))) {
-            WARN("mshtml navigate_url: redirecting to native browser: %s\\n",
-                 debugstr_w(new_url));
-            ShellExecuteW(NULL, L"open", new_url, NULL, NULL, SW_SHOWNORMAL);
-            return S_OK;
-        }
+redirect_code = """    /* Redirect http/https URLs to native Linux browser via ShellExecuteW.
+     * Chain: ShellExecuteW -> shell32 -> winebrowser.exe -> __wine_unix_spawnvp -> xdg-open */
+    if(new_url && (new_url[0]=='h' && new_url[1]=='t' && new_url[2]=='t' && new_url[3]=='p' &&
+                   ((new_url[4]==':' && new_url[5]=='/' && new_url[6]=='/') ||
+                    (new_url[4]=='s' && new_url[5]==':' && new_url[6]=='/' && new_url[7]=='/')))) {
+        WARN("mshtml navigate_url: redirecting to native browser: %s\\n",
+             debugstr_w(new_url));
+        ShellExecuteW(NULL, L"open", new_url, NULL, NULL, SW_SHOWNORMAL);
+        return S_OK;
+    }
 """
 
 # We must find the browser check INSIDE navigate_url, not in other functions.
