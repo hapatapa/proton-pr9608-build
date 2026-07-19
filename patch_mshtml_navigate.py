@@ -29,24 +29,20 @@ with open(filepath, "r") as f:
 declare_code = """
 /* Forward declaration for ShellExecuteW (linked from shell32).
  * We cannot #include <shellapi.h> here due to type conflicts.
- * In MinGW cross-compilation, HINSTANCE and WINAPI may not be defined
- * by the headers that navigate.c includes, so we define them ourselves. */
-#ifndef WINAPI
-#define WINAPI __attribute__((stdcall))
-#endif
+ * Placed AFTER all includes so that HWND, WCHAR, INT, HINSTANCE, WINAPI
+ * are all already defined by windef.h/winuser.h. */
 #ifndef SW_SHOWNORMAL
 #define SW_SHOWNORMAL 1
 #endif
-typedef struct HINSTANCE__ *HINSTANCE;
-extern HINSTANCE WINAPI ShellExecuteW(HWND hwnd, const WCHAR *lpOperation,
-    const WCHAR *lpFile, const WCHAR *lpParameters, const WCHAR *lpDirectory,
-    INT nShowCmd);
+extern HINSTANCE WINAPI ShellExecuteW(HWND, const WCHAR *,
+    const WCHAR *, const WCHAR *, const WCHAR *, INT);
 """
 
 if "extern HINSTANCE WINAPI ShellExecuteW" not in content:
-    # Insert after the last #include before the first C code
-    content = content.replace("#include <stdarg.h>\n",
-                              "#include <stdarg.h>\n" + declare_code, 1)
+    # Insert AFTER the last #include line (shlwapi.h) so that all types
+    # (HWND, WCHAR, INT, HINSTANCE, WINAPI) are already defined.
+    content = content.replace('#include "shlwapi.h"\n',
+                              '#include "shlwapi.h"\n' + declare_code, 1)
     print("Added ShellExecuteW forward declaration")
 else:
     print("ShellExecuteW declaration already present")
