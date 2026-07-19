@@ -27,10 +27,13 @@ with open(filepath, "r") as f:
 # shellapi.h (which causes type conflicts in this translation unit).
 # We also need SW_SHOWNORMAL (=1).
 declare_code = """
-/* Forward declarations for ShellExecuteW (linked from shell32).
+/* Forward declaration for ShellExecuteW (linked from shell32).
  * We cannot #include <shellapi.h> here due to type conflicts.
- * HINSTANCE is not available from navigate.c's existing includes in the
- * MinGW cross-compilation environment, so we typedef it ourselves. */
+ * In MinGW cross-compilation, HINSTANCE and WINAPI may not be defined
+ * by the headers that navigate.c includes, so we define them ourselves. */
+#ifndef WINAPI
+#define WINAPI __attribute__((stdcall))
+#endif
 #ifndef SW_SHOWNORMAL
 #define SW_SHOWNORMAL 1
 #endif
