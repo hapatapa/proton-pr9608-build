@@ -57,26 +57,32 @@ redirect_code = """        /* Redirect http/https URLs to native Linux browser v
         }
 """
 
-# Match: if(!window->browser) \n return E_UNEXPECTED;
-# The actual code in Proton 10.0 Wine (commit b8fdff8e1f85):
-#   if(!window->browser)
-#       return E_UNEXPECTED;
+# We must find the browser check INSIDE navigate_url, not in other functions.
+# There are multiple 'if(!window->browser)' in navigate.c (e.g. navigate_new_window).
+# Strategy: re-find navigate_url function def (after Step 1 may have shifted positions),
+# then search for the browser check only after that point.
+func_def_pattern2 = r'^(HRESULT\s+navigate_url\s*\()'
+func_match2 = re.search(func_def_pattern2, content, re.MULTILINE)
+if not func_match2:
+    print("ERROR: Could not re-find navigate_url function definition")
+    sys.exit(1)
+
+search_start = func_match2.start()
+search_region = content[search_start:]
+
 browser_check_pattern = r'(if\s*\(\s*!window->browser\s*\)\s*\n\s*return\s+E_UNEXPECTED\s*;\s*\n)'
-m = re.search(browser_check_pattern, content)
+m = re.search(browser_check_pattern, search_region)
 
 if not m:
     print("ERROR: Could not find 'if(!window->browser) return E_UNEXPECTED;' in navigate_url")
-    # Print context around navigate_url for debugging
-    idx = content.find("navigate_url")
-    if idx >= 0:
-        # Show the first 600 chars of the function
-        print("Context around navigate_url:")
-        print(repr(content[idx:idx+600]))
+    print("Showing first 600 chars after navigate_url def:")
+    print(repr(search_region[:600]))
     sys.exit(1)
 
 if "redirecting to native browser" not in content:
-    content = content[:m.end()] + redirect_code + content[m.end():]
-    print(f"Injected http/https redirect logic after browser check (at pos {m.end()})")
+    abs_pos = search_start + m.end()
+    content = content[:abs_pos] + redirect_code + content[abs_pos:]
+    print(f"Injected http/https redirect logic after browser check (at pos {abs_pos})")
 else:
     print("Redirect logic already present")
 
