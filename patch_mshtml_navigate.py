@@ -2,9 +2,8 @@
 """Patch Wine's mshtml navigate_url to redirect http/https URLs to the
 native Linux browser via winebrowser.exe.
 
-Uses ShellExecuteW to launch winebrowser.exe directly (bypasses broken
-URL protocol handlers in the Wine prefix registry like open-in-firefox.bat).
-Chain: ShellExecuteW("winebrowser.exe", url) -> winebrowser.exe -> __wine_unix_spawnvp -> xdg-open
+Excludes OAuth callback URLs (oauth20_desktop.srf) so they pass through
+to normal navigation - the game needs to see these in BeforeNavigate2.
 """
 import re, sys
 
@@ -40,16 +39,16 @@ else:
     print("ShellExecuteW forward declaration already present")
 
 # --- Step 2: Insert redirect logic after the browser null-check ---
-# KEY FIX: Use winebrowser.exe as the program, url as parameter.
-# This bypasses Wine's URL protocol handler registry entries (e.g. open-in-firefox.bat)
-# and goes directly: winebrowser.exe -> __wine_unix_spawnvp -> xdg-open -> native browser
+# Exclude OAuth callback URLs (oauth20_desktop.srf) so the game can
+# intercept them via BeforeNavigate2 events.
 redirect_code = """    /* Redirect http/https URLs to native Linux browser via winebrowser.exe.
-     * We launch winebrowser.exe directly (not ShellExecute "open" on the URL) to bypass
-     * broken URL protocol handlers in the Wine prefix (e.g. open-in-firefox.bat).
-     * Chain: ShellExecuteW(winebrowser.exe, url) -> __wine_unix_spawnvp -> xdg-open */
+     * Chain: ShellExecuteW(winebrowser.exe, url) -> __wine_unix_spawnvp -> xdg-open
+     * Excludes OAuth callback URLs (oauth20_desktop.srf) - these must pass
+     * through to normal navigation so the game can capture the auth code. */
     if(new_url && (new_url[0]=='h' && new_url[1]=='t' && new_url[2]=='t' && new_url[3]=='p' &&
                    ((new_url[4]==':' && new_url[5]=='/' && new_url[6]=='/') ||
-                    (new_url[4]=='s' && new_url[5]==':' && new_url[6]=='/' && new_url[7]=='/')))) {
+                    (new_url[4]=='s' && new_url[5]==':' && new_url[6]=='/' && new_url[7]=='/'))) &&
+       !wcsstr(new_url, L"oauth20_desktop.srf")) {
         WARN("mshtml navigate_url: redirecting to native browser: %s\\n",
              debugstr_w(new_url));
         ShellExecuteW(NULL, NULL, L"winebrowser.exe", new_url, NULL, SW_SHOWNORMAL);
