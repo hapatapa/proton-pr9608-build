@@ -1,4 +1,4 @@
-name: Build Proton 10.0 + mshtml xdg-open redirect
+name: Build Proton 10.0 + ieframe/mshtml xdg-open redirect
 
 on:
   workflow_dispatch:
@@ -58,7 +58,7 @@ jobs:
             --build-name=${{ github.event.inputs.build_name || 'Proton-10.0-PR9608' }} \
             --container-engine=docker
 
-      - name: Build Proton (redist) with mshtml patch
+      - name: Build Proton (redist) with browser redirect patch
         working-directory: build-dir
         run: |
           # Start the build in background, redirect to file so we capture
@@ -66,30 +66,63 @@ jobs:
           make redist > build.log 2>&1 &
           BUILD_PID=$!
 
-          # Watch for navigate.c and patch it
+          # Watch for Wine source files and patch them.
+          # ieframe/navigate.c is the MAIN target (IWebBrowser2::Navigate entry point).
+          # mshtml/navigate.c is a secondary target (JS-triggered navigations).
+          PATCHED_MSHTML=0
+          PATCHED_IEFRAME=0
           echo "Watching for Wine source to be cloned..."
           for i in $(seq 1 720); do
               sleep 5
-              NAVFILE=$(find obj-wine64/src-wine obj-wine32/src-wine src-wine \
-                  -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
-              if [ -n "$NAVFILE" ] && [ -f "$NAVFILE" ]; then
-                  if ! grep -q "xdg-open" "$NAVFILE"; then
-                      echo "=== FOUND navigate.c at $NAVFILE, patching now ==="
-                      python3 ../patch_mshtml_navigate.py "$NAVFILE"
-                      echo "=== Patch applied! ==="
-                      NAVFILE32=$(find obj-wine32/src-wine src-wine \
-                          -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
-                      if [ -n "$NAVFILE32" ] && [ "$NAVFILE32" != "$NAVFILE" ] && [ -f "$NAVFILE32" ]; then
-                          if ! grep -q "xdg-open" "$NAVFILE32"; then
-                              echo "=== Also patching 32-bit navigate.c at $NAVFILE32 ==="
-                              python3 ../patch_mshtml_navigate.py "$NAVFILE32"
+
+              # Patch ieframe/navigate.c (primary: IWebBrowser2::Navigate)
+              if [ "$PATCHED_IEFRAME" = "0" ]; then
+                  IEFILE=$(find obj-wine64/src-wine obj-wine32/src-wine src-wine \
+                      -name navigate.c -path "*/ieframe/*" 2>/dev/null | head -1)
+                  if [ -n "$IEFILE" ] && [ -f "$IEFILE" ]; then
+                      if ! grep -q "redirecting to native browser" "$IEFILE"; then
+                          echo "=== FOUND ieframe/navigate.c at $IEFILE, patching now ==="
+                          python3 ../patch_ieframe_navigate.py "$IEFILE"
+                          echo "=== ieframe patch applied! ==="
+                          IEFILE32=$(find obj-wine32/src-wine src-wine \
+                              -name navigate.c -path "*/ieframe/*" 2>/dev/null | head -1)
+                          if [ -n "$IEFILE32" ] && [ "$IEFILE32" != "$IEFILE" ] && [ -f "$IEFILE32" ]; then
+                              if ! grep -q "redirecting to native browser" "$IEFILE32"; then
+                                  echo "=== Also patching 32-bit ieframe/navigate.c ==="
+                                  python3 ../patch_ieframe_navigate.py "$IEFILE32"
+                              fi
                           fi
                       fi
-                      break
-                  else
-                      echo "navigate.c already patched"
-                      break
+                      PATCHED_IEFRAME=1
                   fi
+              fi
+
+              # Patch mshtml/navigate.c (secondary: JS-triggered navigations)
+              if [ "$PATCHED_MSHTML" = "0" ]; then
+                  NAVFILE=$(find obj-wine64/src-wine obj-wine32/src-wine src-wine \
+                      -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
+                  if [ -n "$NAVFILE" ] && [ -f "$NAVFILE" ]; then
+                      if ! grep -q "redirecting to native browser" "$NAVFILE"; then
+                          echo "=== FOUND mshtml/navigate.c at $NAVFILE, patching now ==="
+                          python3 ../patch_mshtml_navigate.py "$NAVFILE"
+                          echo "=== mshtml patch applied! ==="
+                          NAVFILE32=$(find obj-wine32/src-wine src-wine \
+                              -name navigate.c -path "*/mshtml/*" 2>/dev/null | head -1)
+                          if [ -n "$NAVFILE32" ] && [ "$NAVFILE32" != "$NAVFILE" ] && [ -f "$NAVFILE32" ]; then
+                              if ! grep -q "redirecting to native browser" "$NAVFILE32"; then
+                                  echo "=== Also patching 32-bit mshtml/navigate.c ==="
+                                  python3 ../patch_mshtml_navigate.py "$NAVFILE32"
+                              fi
+                          fi
+                      fi
+                      PATCHED_MSHTML=1
+                  fi
+              fi
+
+              # Both patched or build ended
+              if [ "$PATCHED_IEFRAME" = "1" ] && [ "$PATCHED_MSHTML" = "1" ]; then
+                  echo "=== Both patches applied ==="
+                  break
               fi
               if ! kill -0 $BUILD_PID 2>/dev/null; then
                   echo "Build process ended unexpectedly"
