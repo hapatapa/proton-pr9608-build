@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Patch Wine's mshtml navigate_url to redirect http/https URLs to the
-native Linux browser via ShellExecuteW.
+native Linux browser via winebrowser.exe.
 
-The forward declaration of ShellExecuteW is placed right before the
-navigate_url function, where all Wine headers (and thus HWND, WCHAR,
-INT, HINSTANCE, WINAPI) are already defined.
+Uses ShellExecuteW to launch winebrowser.exe directly (bypasses broken
+URL protocol handlers in the Wine prefix registry like open-in-firefox.bat).
+Chain: ShellExecuteW("winebrowser.exe", url) -> winebrowser.exe -> __wine_unix_spawnvp -> xdg-open
 """
 import re, sys
 
@@ -13,9 +13,6 @@ with open(filepath, "r") as f:
     content = f.read()
 
 # --- Step 1: Insert ShellExecuteW forward declaration before navigate_url ---
-# Proton 10.0 Wine signature (4 params including IUri *base_uri):
-#   HRESULT navigate_url(HTMLOuterWindow *window, const WCHAR *new_url, IUri *base_uri, DWORD flags)
-# We match just the start to be robust against future signature changes.
 declare_code = """/* Forward declaration for ShellExecuteW (linked from shell32).
  * Cannot #include <shellapi.h> due to type conflicts with mshtml headers.
  * All types (HWND, WCHAR, INT, HINSTANCE, WINAPI) are already defined
@@ -28,8 +25,6 @@ extern HINSTANCE WINAPI ShellExecuteW(HWND, const WCHAR *, const WCHAR *,
 
 """
 
-# Anchor: match the function definition line flexibly
-# Use a regex to find the navigate_url function definition
 func_def_pattern = r'^(HRESULT\s+navigate_url\s*\()'
 func_match = re.search(func_def_pattern, content, re.MULTILINE)
 
@@ -45,22 +40,23 @@ else:
     print("ShellExecuteW forward declaration already present")
 
 # --- Step 2: Insert redirect logic after the browser null-check ---
-redirect_code = """    /* Redirect http/https URLs to native Linux browser via ShellExecuteW.
-     * Chain: ShellExecuteW -> shell32 -> winebrowser.exe -> __wine_unix_spawnvp -> xdg-open */
+# KEY FIX: Use winebrowser.exe as the program, url as parameter.
+# This bypasses Wine's URL protocol handler registry entries (e.g. open-in-firefox.bat)
+# and goes directly: winebrowser.exe -> __wine_unix_spawnvp -> xdg-open -> native browser
+redirect_code = """    /* Redirect http/https URLs to native Linux browser via winebrowser.exe.
+     * We launch winebrowser.exe directly (not ShellExecute "open" on the URL) to bypass
+     * broken URL protocol handlers in the Wine prefix (e.g. open-in-firefox.bat).
+     * Chain: ShellExecuteW(winebrowser.exe, url) -> __wine_unix_spawnvp -> xdg-open */
     if(new_url && (new_url[0]=='h' && new_url[1]=='t' && new_url[2]=='t' && new_url[3]=='p' &&
                    ((new_url[4]==':' && new_url[5]=='/' && new_url[6]=='/') ||
                     (new_url[4]=='s' && new_url[5]==':' && new_url[6]=='/' && new_url[7]=='/')))) {
         WARN("mshtml navigate_url: redirecting to native browser: %s\\n",
              debugstr_w(new_url));
-        ShellExecuteW(NULL, L"open", new_url, NULL, NULL, SW_SHOWNORMAL);
+        ShellExecuteW(NULL, NULL, L"winebrowser.exe", new_url, NULL, SW_SHOWNORMAL);
         return S_OK;
     }
 """
 
-# We must find the browser check INSIDE navigate_url, not in other functions.
-# There are multiple 'if(!window->browser)' in navigate.c (e.g. navigate_new_window).
-# Strategy: re-find navigate_url function def (after Step 1 may have shifted positions),
-# then search for the browser check only after that point.
 func_def_pattern2 = r'^(HRESULT\s+navigate_url\s*\()'
 func_match2 = re.search(func_def_pattern2, content, re.MULTILINE)
 if not func_match2:
