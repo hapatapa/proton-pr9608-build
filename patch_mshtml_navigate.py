@@ -2,12 +2,9 @@
 """Patch Wine's mshtml navigate_url to redirect http/https URLs to the
 native Linux browser via ShellExecuteW.
 
-Key insight: the forward declaration of ShellExecuteW must be placed AFTER
-all Wine headers have been included (so HWND, WCHAR, INT, WINAPI, HINSTANCE
-etc. are already defined), NOT at the top of the file after stdarg.h.
-Placing it right before the navigate_url function ensures all types exist.
-We cannot #include <shellapi.h> because it conflicts with mshtml's other
-includes (expected '{' at end of input).
+The forward declaration of ShellExecuteW is placed right before the
+navigate_url function, where all Wine headers (and thus HWND, WCHAR,
+INT, HINSTANCE, WINAPI) are already defined.
 """
 import re, sys
 
@@ -15,10 +12,10 @@ filepath = sys.argv[1]
 with open(filepath, "r") as f:
     content = f.read()
 
-# The forward declaration to inject right before navigate_url function.
-# By this point in the file, ALL Wine types are already defined:
-# HWND, WCHAR, INT, HINSTANCE, WINAPI (from windef.h, winnt.h, etc.)
-# We only need to guard SW_SHOWNORMAL in case shellapi.h wasn't included.
+# --- Step 1: Insert ShellExecuteW forward declaration before navigate_url ---
+# Proton 10.0 Wine signature (4 params including IUri *base_uri):
+#   HRESULT navigate_url(HTMLOuterWindow *window, const WCHAR *new_url, IUri *base_uri, DWORD flags)
+# We match just the start to be robust against future signature changes.
 declare_code = """/* Forward declaration for ShellExecuteW (linked from shell32).
  * Cannot #include <shellapi.h> due to type conflicts with mshtml headers.
  * All types (HWND, WCHAR, INT, HINSTANCE, WINAPI) are already defined
@@ -31,29 +28,23 @@ extern HINSTANCE WINAPI ShellExecuteW(HWND, const WCHAR *, const WCHAR *,
 
 """
 
-# Insert declaration right before the navigate_url function definition.
-# The function signature is unique and serves as a reliable anchor.
-func_anchor = "HRESULT navigate_url(HTMLOuterWindow *window, const WCHAR *new_url, DWORD flags)"
+# Anchor: match the function definition line flexibly
+# Use a regex to find the navigate_url function definition
+func_def_pattern = r'^(HRESULT\s+navigate_url\s*\()'
+func_match = re.search(func_def_pattern, content, re.MULTILINE)
 
 if "extern HINSTANCE WINAPI ShellExecuteW" not in content:
-    if func_anchor in content:
-        content = content.replace(
-            func_anchor,
-            declare_code + func_anchor,
-            1
-        )
-        print("Inserted ShellExecuteW forward declaration before navigate_url")
+    if func_match:
+        insert_pos = func_match.start()
+        content = content[:insert_pos] + declare_code + content[insert_pos:]
+        print(f"Inserted ShellExecuteW forward declaration at line {content[:insert_pos].count(chr(10))+1}")
     else:
-        print("ERROR: Could not find navigate_url function signature")
-        idx = content.find("navigate_url")
-        if idx >= 0:
-            print("Found 'navigate_url' at index", idx)
-            print("Context:", repr(content[idx:idx+300]))
+        print("ERROR: Could not find navigate_url function definition")
         sys.exit(1)
 else:
     print("ShellExecuteW forward declaration already present")
 
-# Now inject the redirect logic after the browser null-check.
+# --- Step 2: Insert redirect logic after the browser null-check ---
 redirect_code = """        /* Redirect http/https URLs to native Linux browser via ShellExecuteW.
          * Chain: ShellExecuteW -> shell32 -> winebrowser.exe -> __wine_unix_spawnvp -> xdg-open */
         if(new_url && ((new_url[0]=='h' && new_url[1]=='t' && new_url[2]=='t' && new_url[3]=='p' &&
@@ -66,22 +57,26 @@ redirect_code = """        /* Redirect http/https URLs to native Linux browser v
         }
 """
 
-func_pattern = r'(HRESULT navigate_url\(HTMLOuterWindow \*window.*?if\(!window->browser\)\s+return E_UNEXPECTED;\n)'
-m = re.search(func_pattern, content, re.DOTALL)
+# Match: if(!window->browser) \n return E_UNEXPECTED;
+# The actual code in Proton 10.0 Wine (commit b8fdff8e1f85):
+#   if(!window->browser)
+#       return E_UNEXPECTED;
+browser_check_pattern = r'(if\s*\(\s*!window->browser\s*\)\s*\n\s*return\s+E_UNEXPECTED\s*;\s*\n)'
+m = re.search(browser_check_pattern, content)
+
 if not m:
-    # Broader pattern in case whitespace differs
-    func_pattern2 = r'(HRESULT navigate_url\(HTMLOuterWindow \*window[^\{]*\{[^}]*?if\s*\(\s*!window->browser\s*\)\s*return\s+E_UNEXPECTED\s*;\s*\n)'
-    m = re.search(func_pattern2, content, re.DOTALL)
-    if not m:
-        print("ERROR: Could not find navigate_url browser check")
-        idx = content.find("navigate_url")
-        if idx >= 0:
-            print("Context around navigate_url:", repr(content[idx:idx+500]))
-        sys.exit(1)
+    print("ERROR: Could not find 'if(!window->browser) return E_UNEXPECTED;' in navigate_url")
+    # Print context around navigate_url for debugging
+    idx = content.find("navigate_url")
+    if idx >= 0:
+        # Show the first 600 chars of the function
+        print("Context around navigate_url:")
+        print(repr(content[idx:idx+600]))
+    sys.exit(1)
 
 if "redirecting to native browser" not in content:
     content = content[:m.end()] + redirect_code + content[m.end():]
-    print("Injected http/https redirect logic into navigate_url")
+    print(f"Injected http/https redirect logic after browser check (at pos {m.end()})")
 else:
     print("Redirect logic already present")
 
